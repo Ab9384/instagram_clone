@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/models/post_model.dart';
+import 'package:instagram_clone/models/story_model.dart';
 import 'package:instagram_clone/models/user_model.dart';
 
 class AppData extends ChangeNotifier {
@@ -15,6 +16,14 @@ class AppData extends ChangeNotifier {
 
   set setPostList(List<PostModel> postList) {
     this.postList = postList;
+    notifyListeners();
+  }
+
+  // ----------------- Stories -----------------
+  List<StoryModel> storiesList = [];
+
+  set setStoriesList(List<StoryModel> storiesList) {
+    this.storiesList = storiesList;
     notifyListeners();
   }
 

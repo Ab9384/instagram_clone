@@ -1,6 +1,5 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:instagram_clone/models/post_model.dart';
 import 'dart:math' as math;
 
@@ -18,19 +17,6 @@ class PostWidget extends StatefulWidget {
 class _PostWidgetState extends State<PostWidget> {
   ScrollController dotScrollController = ScrollController();
   int currentImageIndex = 0;
-
-  @override
-  void initState() {
-    // make sure the dot is in the middle of the screen
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      dotScrollController.animateTo(
-        (currentImageIndex * 30).toDouble(),
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
-      );
-    });
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +72,7 @@ class _PostWidgetState extends State<PostWidget> {
                   onPageChanged: (index) {
                     setState(() {
                       currentImageIndex = index;
+                      scrollToSelectedDot(index);
                     });
                   },
                   itemBuilder: (context, index) {
@@ -105,7 +92,7 @@ class _PostWidgetState extends State<PostWidget> {
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
                       color: Colors.black.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(15),
                     ),
                     child: Text(
                       '${currentImageIndex + 1}/${widget.postModel.images.length}',
@@ -165,6 +152,7 @@ class _PostWidgetState extends State<PostWidget> {
                     child: Center(
                       child: SizedBox(
                         height: 25,
+                        width: 60,
                         child: SingleChildScrollView(
                           controller: dotScrollController,
                           scrollDirection: Axis.horizontal,
@@ -174,10 +162,10 @@ class _PostWidgetState extends State<PostWidget> {
                             children: List.generate(
                               widget.postModel.images.length,
                               (index) => Padding(
-                                padding: const EdgeInsets.all(5),
+                                padding: const EdgeInsets.all(2),
                                 child: Container(
-                                  width: currentImageIndex == index ? 6 : 8,
-                                  height: currentImageIndex == index ? 6 : 8,
+                                  width: currentImageIndex == index ? 5 : 4,
+                                  height: currentImageIndex == index ? 5 : 4,
                                   decoration: BoxDecoration(
                                     color: currentImageIndex == index
                                         ? Colors.blue
@@ -271,6 +259,14 @@ class _PostWidgetState extends State<PostWidget> {
           ),
         ],
       ),
+    );
+  }
+
+  void scrollToSelectedDot(int index) {
+    dotScrollController.animateTo(
+      index * 8,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
     );
   }
 }

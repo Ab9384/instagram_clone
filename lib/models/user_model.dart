@@ -1,3 +1,5 @@
+import 'package:instagram_clone/utils/global_variable.dart';
+
 class UserModel {
   String? userId;
   String? username;
@@ -37,7 +39,10 @@ class UserModel {
     email = json['email'];
     following = json['following'];
     followers = json['followers'];
-    profilePhoto = json['profilePhoto'];
+    profilePhoto = json['profilePhoto'] ??
+        (json['gender'].toString().toLowerCase() == 'female'
+            ? femaleAvatar
+            : maleAvatar);
     bio = json['bio'];
     website = json['website'];
     phoneNumber = json['phoneNumber'];

@@ -17,4 +17,63 @@ String femaleAvatar =
     'https://khabarwani.com/wp-content/uploads/2022/10/Avneet-Kaur-cute.jpg';
 
 String maleAvatar =
-    'https://khabarwani.com/wp-content/uploads/2022/10/Avneet-Kaur-cute.jpg';
+    'https://lh3.googleusercontent.com/a/ACg8ocKNS4Kv4p4oLY4fYtoo8uhoyt9CTDpCBbo7p8ly4cy2XjPr=s360-c-no';
+
+List<String> northIndianNames = [
+  // Male names
+  'Aarav',
+  'Vivaan',
+  'Arjun',
+  'Vihaan',
+  'Aryan',
+  'Advik',
+  'Reyansh',
+  'Shaurya',
+  'Kabir',
+  'Aadi',
+  'Rudra',
+  'Dhruv',
+  'Ishaan',
+  'Atharva',
+  'Ayaan',
+  'Pranav',
+  'Aarush',
+  'Vedant',
+  'Veer',
+  'Yuvaan',
+  'Ansh',
+  'Parth',
+  'Shivansh',
+  'Rohan',
+  'Ranveer',
+
+  // Female names
+  'Aaradhya',
+  'Ananya',
+  'Avni',
+  'Ishita',
+  'Myra',
+  'Siya',
+  'Aarohi',
+  'Anika',
+  'Pari',
+  'Kavya',
+  'Navya',
+  'Saanvi',
+  'Kyra',
+  'Avishi',
+  'Amaira',
+  'Tara',
+  'Diya',
+  'Riya',
+  'Sara',
+  'Anvi',
+  'Aarna',
+  'Ira',
+  'Prisha',
+  'Radha',
+];
+
+bool isMale(String name) {
+  return northIndianNames.indexOf(name) < 25;
+}

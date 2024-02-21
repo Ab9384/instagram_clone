@@ -5,8 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/functions/helper_functions.dart';
 import 'package:instagram_clone/models/post_model.dart';
+import 'package:instagram_clone/models/story_model.dart';
 import 'package:instagram_clone/provider/app_data.dart';
 import 'package:instagram_clone/widgets/post_widget.dart';
+import 'package:instagram_clone/widgets/stories_widget.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -19,10 +21,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Provider.of<AppData>(context, listen: false).setPostList =
-          HelperFunctions().generateDummyPosts(context);
-    });
+    if (Provider.of<AppData>(context, listen: false).postList.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        Provider.of<AppData>(context, listen: false).setPostList =
+            HelperFunctions().generateDummyPosts(context);
+        Provider.of<AppData>(context, listen: false).setStoriesList =
+            HelperFunctions().generateDummyStories(context);
+      });
+    }
     super.initState();
   }
 
@@ -74,10 +80,51 @@ class _HomeScreenState extends State<HomeScreen> {
                     HelperFunctions().generateDummyPosts(context);
                 Provider.of<AppData>(context, listen: false).setPostList =
                     postList;
+
+                List<StoryModel> storiesList =
+                    HelperFunctions().generateDummyStories(context);
+                Provider.of<AppData>(context, listen: false).setStoriesList =
+                    storiesList;
                 await Future<void>.delayed(
                   const Duration(milliseconds: 2000),
                 );
               },
+            ),
+            // Stories
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: 100,
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: Provider.of<AppData>(context).storiesList.length,
+                  itemBuilder: (context, index) {
+                    StoryModel storyModel =
+                        Provider.of<AppData>(context).storiesList[index];
+                    return Row(
+                      children: [
+                        if (index == 0) const MyStoryWidget(),
+                        StoriesWidget(story: storyModel),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ),
+
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 5),
+            ),
+            // divider
+            const SliverToBoxAdapter(
+              child: Divider(
+                // height: 0.1,
+                thickness: 0.2,
+                color: Colors.grey,
+              ),
+            ),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 5),
             ),
             SliverList(
               delegate: SliverChildBuilderDelegate(
