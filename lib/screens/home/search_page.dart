@@ -2,9 +2,11 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:instagram_clone/models/post_model.dart';
 import 'package:instagram_clone/provider/app_data.dart';
 import 'package:instagram_clone/widgets/video_player_widget.dart';
 import 'package:provider/provider.dart';
+import 'dart:math' as math;
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -14,15 +16,18 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  List<String> postImageList = [];
+  List<PostModel> postImageList = [];
   List<String> reelVideoList = [];
+  int totalELements = 0;
   @override
   void initState() {
-    setState(() {
-      postImageList =
-          Provider.of<AppData>(context, listen: false).postImageList;
-      reelVideoList =
-          Provider.of<AppData>(context, listen: false).reelVideoList;
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      setState(() {
+        postImageList = Provider.of<AppData>(context, listen: false).postList;
+        reelVideoList =
+            Provider.of<AppData>(context, listen: false).reelVideoList;
+        totalELements = calculateTotalElements();
+      });
     });
 
     super.initState();
@@ -57,7 +62,6 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
         ),
-
         CupertinoSliverRefreshControl(
           onRefresh: () async {
             setState(() {
@@ -95,18 +99,20 @@ class _SearchPageState extends State<SearchPage> {
                       //     : Text('Image ${index - (index ~/ 5)}')
                       ? SearchPageImageWidget(
                           aspectRatio: 1,
-                          postImageUrl: postImageList[index - (index ~/ 5)])
+                          postImageUrl:
+                              postImageList[index - (index ~/ 5)].images)
                       : index ~/ 5 < reelVideoList.length
                           ? VideoPlayerWidget(
                               videoUrl: reelVideoList[index ~/ 5],
+                              gestureEnabled: false,
                             )
                           : SearchPageImageWidget(
                               aspectRatio: 1 / 2,
                               postImageUrl:
-                                  postImageList[index - (index ~/ 5)]),
+                                  postImageList[index - (index ~/ 5)].images),
                 ));
           },
-          itemCount: postImageList.length + reelVideoList.length,
+          itemCount: totalELements,
         )
       ]),
     ));
@@ -120,6 +126,27 @@ class _SearchPageState extends State<SearchPage> {
       return offset == 2 || offset == 5;
     }
   }
+
+  int calculateTotalElements() {
+    int noOfReels = reelVideoList.length;
+    int noOfImages = postImageList.length;
+    int totalElements = 0;
+
+    // Calculate the maximum number of reels that can be used based on the image count
+    int maxReels =
+        noOfImages ~/ 4; // Divide images by 4 to get the maximum possible reels
+
+    // Ensure the number of reels doesn't exceed the available reels
+    int actualReels = math.min(maxReels, noOfReels);
+
+    // Calculate the number of images to be used based on the actual reels
+    int imagesToUse = actualReels * 4;
+
+    // Calculate the total elements by adding the actual reels and images to be used
+    totalElements = imagesToUse + actualReels;
+
+    return totalElements;
+  }
 }
 
 class SearchPageImageWidget extends StatelessWidget {
@@ -129,31 +156,46 @@ class SearchPageImageWidget extends StatelessWidget {
     required this.aspectRatio,
   });
 
-  final String postImageUrl;
+  final List<String> postImageUrl;
   final double aspectRatio;
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: aspectRatio,
-      child: ExtendedImage.network(
-        postImageUrl,
-        fit: BoxFit.cover,
-        alignment: Alignment.topCenter,
-        loadStateChanged: (state) {
-          if (state.extendedImageLoadState == LoadState.loading) {
-            return const Center(
-              child: CupertinoActivityIndicator(),
-            );
-          } else if (state.extendedImageLoadState == LoadState.failed) {
-            return const Center(
-              child: Text(''),
-            );
-          } else {
-            return null;
-          }
-        },
-      ),
+    return Stack(
+      children: [
+        AspectRatio(
+          aspectRatio: aspectRatio,
+          child: ExtendedImage.network(
+            postImageUrl[0],
+            fit: BoxFit.cover,
+            alignment: Alignment.topCenter,
+            loadStateChanged: (state) {
+              if (state.extendedImageLoadState == LoadState.loading) {
+                return const Center(
+                  child: CupertinoActivityIndicator(),
+                );
+              } else if (state.extendedImageLoadState == LoadState.failed) {
+                return const Center(
+                  child: Text(''),
+                );
+              } else {
+                return null;
+              }
+            },
+          ),
+        ),
+        // reel icon top right
+        Positioned(
+          top: 10,
+          right: 10,
+          child: ExtendedImage.asset(
+            'assets/icons/multiple_image.png',
+            height: 15,
+            width: 15,
+            color: Colors.white,
+          ),
+        ),
+      ],
     );
   }
 }

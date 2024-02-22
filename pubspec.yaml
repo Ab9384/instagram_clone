@@ -43,6 +43,7 @@ dependencies:
   video_player: ^2.8.2
   image_picker: ^1.0.7
   file_picker: ^6.1.1
+  card_swiper: ^3.0.1
   # Firebase
   firebase_core: ^2.25.4
   firebase_auth: ^4.17.5

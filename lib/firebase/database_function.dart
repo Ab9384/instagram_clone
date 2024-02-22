@@ -127,7 +127,7 @@ class DatabaseFunctions {
   static Future<List<String>> getReelVideoList() async {
     final DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
         .collection("content")
-        .doc("reels")
+        .doc("ig_reels")
         .get();
     if (!documentSnapshot.exists) {
       return [];

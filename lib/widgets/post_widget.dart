@@ -1,4 +1,5 @@
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/models/post_model.dart';
 import 'dart:math' as math;
@@ -55,9 +56,7 @@ class _PostWidgetState extends State<PostWidget> {
                 const Spacer(),
                 IconButton(
                   onPressed: () {},
-                  icon: Transform.rotate(
-                      angle: -math.pi / 2,
-                      child: const Icon(Icons.more_vert_outlined)),
+                  icon: const Icon(CupertinoIcons.ellipsis),
                 )
               ],
             ),

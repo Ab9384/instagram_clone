@@ -97,4 +97,34 @@ class ToastFunction {
       print(e);
     }
   }
+
+  // show icon toast
+  static void showIconToast(
+    BuildContext context,
+    IconData icon,
+  ) {
+    if (context.mounted == false) return;
+    try {
+      FToast fToast = FToast();
+      fToast.init(context);
+      fToast.showToast(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.black.withOpacity(0.5),
+          ),
+          child: Icon(
+            icon,
+            color: Colors.white,
+            size: 20,
+          ),
+        ),
+        gravity: ToastGravity.CENTER,
+        toastDuration: const Duration(seconds: 1),
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
 }

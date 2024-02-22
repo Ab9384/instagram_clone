@@ -14,7 +14,8 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (BuildContext context) => Settings()),
+    ChangeNotifierProvider(
+        create: (BuildContext context) => SettingsProvider()),
     ChangeNotifierProvider(create: (BuildContext context) => AppData())
   ], child: const MyApp()));
 }
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onLongPress: () {
-        Provider.of<Settings>(context, listen: false).toggleTheme();
+        Provider.of<SettingsProvider>(context, listen: false).toggleTheme();
       },
       child: MaterialApp(
         title: 'Instagram Clone',
@@ -42,13 +43,13 @@ class MyApp extends StatelessWidget {
   ThemeData getTheme(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Provider.of<Settings>(context).isDark
+      statusBarIconBrightness: Provider.of<SettingsProvider>(context).isDark
           ? Brightness.light
           : Brightness.dark,
     ));
     // only portrait mode
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    final settings = Provider.of<Settings>(context);
+    final settings = Provider.of<SettingsProvider>(context);
     return settings.isDark ? AppColors().darkTheme : AppColors().lightTheme;
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:instagram_clone/models/user_model.dart';
 import 'package:instagram_clone/provider/app_data.dart';
 import 'package:instagram_clone/screens/home/home_page.dart';
+import 'package:instagram_clone/screens/home/reel_screen.dart';
 import 'package:instagram_clone/screens/home/search_page.dart';
 import 'package:instagram_clone/utils/global_variable.dart';
 import 'package:provider/provider.dart';
@@ -127,7 +128,7 @@ class _LandingScreenState extends State<LandingScreen>
             children: const [
               HomeScreen(),
               SearchPage(),
-              Center(child: Text('Reels')),
+              ReelScreen(),
               Center(child: Text('Profile')),
             ],
           ),
