@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:instagram_clone/models/user_model.dart';
 import 'package:instagram_clone/provider/app_data.dart';
 import 'package:instagram_clone/screens/home/home_page.dart';
+import 'package:instagram_clone/screens/home/search_page.dart';
 import 'package:instagram_clone/utils/global_variable.dart';
 import 'package:provider/provider.dart';
 
@@ -118,15 +119,18 @@ class _LandingScreenState extends State<LandingScreen>
             ],
           ),
         ),
-        body: TabBarView(
-          controller: homePageTabController,
-          physics: const NeverScrollableScrollPhysics(),
-          children: const [
-            HomeScreen(),
-            Center(child: Text('Search')),
-            Center(child: Text('Reels')),
-            Center(child: Text('Profile')),
-          ],
+        body: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          child: TabBarView(
+            controller: homePageTabController,
+            physics: const NeverScrollableScrollPhysics(),
+            children: const [
+              HomeScreen(),
+              SearchPage(),
+              Center(child: Text('Reels')),
+              Center(child: Text('Profile')),
+            ],
+          ),
         ));
   }
 }

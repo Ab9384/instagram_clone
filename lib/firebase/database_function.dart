@@ -116,8 +116,11 @@ class DatabaseFunctions {
     if (!documentSnapshot.exists) {
       return [];
     }
-    return List<String>.from(
+    List<String> images = List<String>.from(
         (documentSnapshot.data() as Map<String, dynamic>)["images"]);
+    // shuffle the list
+    images.shuffle();
+    return images;
   }
 
   // get reel video list
@@ -129,7 +132,10 @@ class DatabaseFunctions {
     if (!documentSnapshot.exists) {
       return [];
     }
-    return List<String>.from(
+    List<String> videos = List<String>.from(
         (documentSnapshot.data() as Map<String, dynamic>)["videos"]);
+    // shuffle the list
+    videos.shuffle();
+    return videos;
   }
 }

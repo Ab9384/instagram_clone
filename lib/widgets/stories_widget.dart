@@ -48,6 +48,7 @@ class StoriesWidget extends StatelessWidget {
             style: TextStyle(
               color: Theme.of(context).textTheme.bodyLarge!.color,
               fontSize: 12,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ],
@@ -120,6 +121,7 @@ class MyStoryWidget extends StatelessWidget {
             style: TextStyle(
               color: Theme.of(context).textTheme.bodyLarge!.color,
               fontSize: 12,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
