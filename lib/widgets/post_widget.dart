@@ -2,7 +2,6 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/models/post_model.dart';
-import 'dart:math' as math;
 
 import 'package:instagram_clone/utils/app_colors.dart';
 import 'package:instagram_clone/utils/global_variable.dart';

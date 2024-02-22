@@ -2,10 +2,7 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:instagram_clone/provider/app_data.dart';
-import 'package:instagram_clone/provider/settings.dart';
-import 'package:instagram_clone/utils/app_colors.dart';
 import 'package:instagram_clone/widgets/video_player_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -35,7 +32,7 @@ class _ReelScreenState extends State<ReelScreen> {
           loop: false,
           scrollDirection: Axis.vertical,
           itemBuilder: (context, index) {
-            print('reel index: $index');
+            // print('reel index: $index');
             return ReelWidget(videoUrl: reels[index]);
           },
         ),
