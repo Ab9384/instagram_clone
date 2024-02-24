@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:instagram_clone/models/post_model.dart';
+import 'package:instagram_clone/models/reel_model.dart';
 import 'package:instagram_clone/models/user_model.dart';
 import 'package:instagram_clone/provider/app_data.dart';
 import 'package:provider/provider.dart';
@@ -108,7 +110,7 @@ class DatabaseFunctions {
   }
 
   // get post image list
-  static Future<List<String>> getPostImageList() async {
+  static Future<List<String>> getImages() async {
     final DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
         .collection("content")
         .doc("post")
@@ -124,18 +126,40 @@ class DatabaseFunctions {
   }
 
   // get reel video list
-  static Future<List<String>> getReelVideoList() async {
+  static Future<List<String>> getVideos() async {
     final DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
         .collection("content")
-        .doc("ig_reels")
+        .doc("reels")
         .get();
     if (!documentSnapshot.exists) {
       return [];
     }
     List<String> videos = List<String>.from(
         (documentSnapshot.data() as Map<String, dynamic>)["videos"]);
-    // shuffle the list
-    videos.shuffle();
     return videos;
+  }
+
+  // get all reels from the database
+  static Future<List<ReelModel>> getAllReels() async {
+    List<ReelModel> reels = [];
+    final QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection("reels").get();
+    for (QueryDocumentSnapshot queryDocumentSnapshot in querySnapshot.docs) {
+      reels.add(ReelModel.fromMap(
+          queryDocumentSnapshot.data() as Map<String, dynamic>));
+    }
+    return reels;
+  }
+
+  // get all posts from the database
+  static Future<List<PostModel>> getAllPosts() async {
+    List<PostModel> posts = [];
+    final QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection("posts").get();
+    for (QueryDocumentSnapshot queryDocumentSnapshot in querySnapshot.docs) {
+      posts.add(PostModel.fromMap(
+          queryDocumentSnapshot.data() as Map<String, dynamic>));
+    }
+    return posts;
   }
 }

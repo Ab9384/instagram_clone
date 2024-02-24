@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/models/post_model.dart';
+import 'package:instagram_clone/models/reel_model.dart';
 import 'package:instagram_clone/models/story_model.dart';
 import 'package:instagram_clone/models/user_model.dart';
 
@@ -19,6 +20,14 @@ class AppData extends ChangeNotifier {
     notifyListeners();
   }
 
+  // ----------------- Reels -----------------
+  List<ReelModel> reelsList = [];
+
+  set setReelsList(List<ReelModel> reelsList) {
+    this.reelsList = reelsList;
+    notifyListeners();
+  }
+
   // ----------------- Stories -----------------
   List<StoryModel> storiesList = [];
 
@@ -27,19 +36,19 @@ class AppData extends ChangeNotifier {
     notifyListeners();
   }
 
-  // post image list
-  List<String> postImageList = [];
+  // ----------------- Image List -----------------
+  List<String> imageList = [];
 
-  set setPostImageList(List<String> postImageList) {
-    this.postImageList = postImageList;
+  set setImageList(List<String> imageList) {
+    this.imageList = imageList;
     notifyListeners();
   }
 
-  // reel video list
-  List<String> reelVideoList = [];
+  // ----------------- Video List -----------------
+  List<String> videoList = [];
 
-  set setReelVideoList(List<String> reelVideoList) {
-    this.reelVideoList = reelVideoList;
+  set setVideoList(List<String> videoList) {
+    this.videoList = videoList;
     notifyListeners();
   }
 }

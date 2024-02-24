@@ -29,6 +29,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         Uri.parse(
           widget.videoUrl,
         ),
+        formatHint: VideoFormat.other,
         videoPlayerOptions: VideoPlayerOptions(mixWithOthers: false))
       ..initialize().then((_) {
         setState(() {
@@ -40,7 +41,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
               videoPlayerController!.setVolume(0);
             }
           } else {
-            videoPlayerController!.play();
+            videoPlayerController!.pause();
             videoPlayerController!.setVolume(0);
           }
 

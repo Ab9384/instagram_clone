@@ -1,9 +1,9 @@
-class PostModel {
+class ReelModel {
   String id;
   String userId;
   String username;
   String userImage;
-  List<String> images;
+  String videoUrl;
   String caption;
   String location;
   int likes;
@@ -12,12 +12,12 @@ class PostModel {
   int shares;
   String time;
 
-  PostModel({
+  ReelModel({
     required this.id,
     required this.userId,
     required this.username,
     required this.userImage,
-    required this.images,
+    required this.videoUrl,
     required this.caption,
     required this.location,
     required this.likes,
@@ -27,12 +27,12 @@ class PostModel {
     required this.time,
   });
 
-  PostModel.fromMap(Map<String, dynamic> data)
+  ReelModel.fromMap(Map<String, dynamic> data)
       : id = data['id'],
         userId = data['userId'],
         username = data['username'],
         userImage = data['userImage'],
-        images = List<String>.from(data['images']),
+        videoUrl = data['video'],
         caption = data['caption'],
         location = data['location'],
         likes = data['likes'],
@@ -47,12 +47,11 @@ class PostModel {
       'userId': userId,
       'username': username,
       'userImage': userImage,
-      'images': images,
+      'video': videoUrl,
       'caption': caption,
       'location': location,
       'likes': likes,
       'comments': comments,
-      'commentsData': commentsData,
       'shares': shares,
       'time': time,
     };

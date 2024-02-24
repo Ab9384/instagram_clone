@@ -13,10 +13,10 @@ class SettingsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ScrollPhysics? homeScrollPhysics = const NeverScrollableScrollPhysics();
+  int currentHomeScreenIndex = 0;
 
-  // void setHomeScrollPhysics(ScrollPhysics physics) {
-  //   homeScrollPhysics = physics;
-  //   notifyListeners();
-  // }
+  void setCurrentHomeScreenIndex(int index) {
+    currentHomeScreenIndex = index;
+    notifyListeners();
+  }
 }

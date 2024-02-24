@@ -2,30 +2,31 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:instagram_clone/functions/navigator_function.dart';
 import 'package:instagram_clone/models/post_model.dart';
+import 'package:instagram_clone/models/reel_model.dart';
 import 'package:instagram_clone/provider/app_data.dart';
-import 'package:instagram_clone/widgets/video_player_widget.dart';
+import 'package:instagram_clone/screens/post/post_view_screen.dart';
 import 'package:provider/provider.dart';
 import 'dart:math' as math;
 
-class SearchPage extends StatefulWidget {
-  const SearchPage({super.key});
+class ExplorePage extends StatefulWidget {
+  const ExplorePage({super.key});
 
   @override
-  State<SearchPage> createState() => _SearchPageState();
+  State<ExplorePage> createState() => _ExplorePageState();
 }
 
-class _SearchPageState extends State<SearchPage> {
+class _ExplorePageState extends State<ExplorePage> {
   List<PostModel> postImageList = [];
-  List<String> reelVideoList = [];
+  List<ReelModel> reelVideoList = [];
   int totalELements = 0;
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       setState(() {
         postImageList = Provider.of<AppData>(context, listen: false).postList;
-        reelVideoList =
-            Provider.of<AppData>(context, listen: false).reelVideoList;
+        reelVideoList = Provider.of<AppData>(context, listen: false).reelsList;
         totalELements = calculateTotalElements();
       });
     });
@@ -99,17 +100,16 @@ class _SearchPageState extends State<SearchPage> {
                       //     : Text('Image ${index - (index ~/ 5)}')
                       ? SearchPageImageWidget(
                           aspectRatio: 1,
-                          postImageUrl:
-                              postImageList[index - (index ~/ 5)].images)
+                          postModel: postImageList[index - (index ~/ 5)])
                       : index ~/ 5 < reelVideoList.length
-                          ? VideoPlayerWidget(
-                              videoUrl: reelVideoList[index ~/ 5],
-                              gestureEnabled: false,
-                            )
+                          // ? VideoPlayerWidget(
+                          //     videoUrl: reelVideoList[index ~/ 5],
+                          //     gestureEnabled: false,
+                          //   )
+                          ? Text('Reel ${index ~/ 5}')
                           : SearchPageImageWidget(
                               aspectRatio: 1 / 2,
-                              postImageUrl:
-                                  postImageList[index - (index ~/ 5)].images),
+                              postModel: postImageList[index - (index ~/ 5)]),
                 ));
           },
           itemCount: totalELements,
@@ -152,50 +152,56 @@ class _SearchPageState extends State<SearchPage> {
 class SearchPageImageWidget extends StatelessWidget {
   const SearchPageImageWidget({
     super.key,
-    required this.postImageUrl,
+    required this.postModel,
     required this.aspectRatio,
   });
 
-  final List<String> postImageUrl;
+  final PostModel postModel;
   final double aspectRatio;
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        AspectRatio(
-          aspectRatio: aspectRatio,
-          child: ExtendedImage.network(
-            postImageUrl[0],
-            fit: BoxFit.cover,
-            alignment: Alignment.topCenter,
-            loadStateChanged: (state) {
-              if (state.extendedImageLoadState == LoadState.loading) {
-                return const Center(
-                  child: CupertinoActivityIndicator(),
-                );
-              } else if (state.extendedImageLoadState == LoadState.failed) {
-                return const Center(
-                  child: Text(''),
-                );
-              } else {
-                return null;
-              }
-            },
+    return GestureDetector(
+      onTap: () {
+        NavigatorFunctions.navigateTo(
+            context, PostViewScreen(postModel: postModel));
+      },
+      child: Stack(
+        children: [
+          AspectRatio(
+            aspectRatio: aspectRatio,
+            child: ExtendedImage.network(
+              postModel.images[0],
+              fit: BoxFit.cover,
+              alignment: Alignment.topCenter,
+              loadStateChanged: (state) {
+                if (state.extendedImageLoadState == LoadState.loading) {
+                  return const Center(
+                    child: CupertinoActivityIndicator(),
+                  );
+                } else if (state.extendedImageLoadState == LoadState.failed) {
+                  return const Center(
+                    child: Text(''),
+                  );
+                } else {
+                  return null;
+                }
+              },
+            ),
           ),
-        ),
-        // reel icon top right
-        Positioned(
-          top: 10,
-          right: 10,
-          child: ExtendedImage.asset(
-            'assets/icons/multiple_image.png',
-            height: 15,
-            width: 15,
-            color: Colors.white,
+          // reel icon top right
+          Positioned(
+            top: 10,
+            right: 10,
+            child: ExtendedImage.asset(
+              'assets/icons/multiple_image.png',
+              height: 15,
+              width: 15,
+              color: Colors.white,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

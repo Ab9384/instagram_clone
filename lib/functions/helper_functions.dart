@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:instagram_clone/models/post_model.dart';
+import 'package:instagram_clone/models/reel_model.dart';
 import 'package:instagram_clone/models/story_model.dart';
 import 'package:instagram_clone/provider/app_data.dart';
 import 'package:instagram_clone/utils/global_variable.dart';
@@ -18,34 +19,34 @@ class HelperFunctions {
   List<PostModel> generateDummyPosts(context) {
     List<PostModel> posts = [];
     List<String> postImages =
-        Provider.of<AppData>(context, listen: false).postImageList;
+        Provider.of<AppData>(context, listen: false).imageList;
     Random random = Random();
 
     for (int i = 0; i < postImages.length; i++) {
       int likes = random.nextInt(1000000);
-      int comments = random.nextInt(5000);
+      int comments = 0;
       int randomIndex = random.nextInt(49);
       PostModel post = PostModel(
-        id: 'post_$i',
-        userId: 'user_$i',
-        username: northIndianNames[randomIndex],
-        userImage:
-            isMale(northIndianNames[randomIndex]) ? maleAvatar : femaleAvatar,
-        images: [
-          postImages[random.nextInt(postImages.length)],
-          postImages[random.nextInt(postImages.length)],
-          postImages[random.nextInt(postImages.length)],
-          postImages[random.nextInt(postImages.length)],
-          postImages[random.nextInt(postImages.length)],
-          postImages[random.nextInt(postImages.length)],
-        ],
-        caption: 'Caption for post $i',
-        location: 'Location $i',
-        likes: likes,
-        comments: comments,
-        shares: i * 2,
-        time: 'Time for post $i',
-      );
+          id: 'post_$i',
+          userId: 'user_$i',
+          username: northIndianNames[randomIndex],
+          userImage:
+              isMale(northIndianNames[randomIndex]) ? maleAvatar : femaleAvatar,
+          images: [
+            postImages[i],
+            postImages[random.nextInt(postImages.length)],
+            postImages[random.nextInt(postImages.length)],
+            postImages[random.nextInt(postImages.length)],
+            postImages[random.nextInt(postImages.length)],
+            postImages[random.nextInt(postImages.length)],
+          ],
+          caption: 'Caption for post $i',
+          location: 'Location $i',
+          likes: likes,
+          comments: comments,
+          shares: i * 2,
+          time: 'Time for post $i',
+          commentsData: []);
       posts.add(post);
     }
 
@@ -56,9 +57,9 @@ class HelperFunctions {
   List<StoryModel> generateDummyStories(context) {
     List<StoryModel> stories = [];
     List<String> postImages =
-        Provider.of<AppData>(context, listen: false).postImageList;
+        Provider.of<AppData>(context, listen: false).imageList;
     List<String> reelVideos =
-        Provider.of<AppData>(context, listen: false).reelVideoList;
+        Provider.of<AppData>(context, listen: false).videoList;
     Random random = Random();
 
     for (int i = 0; i < 10; i++) {
@@ -91,5 +92,36 @@ class HelperFunctions {
       stories.add(story);
     }
     return stories;
+  }
+
+  //generate dummy reels
+  List<ReelModel> generateDummyReels(context) {
+    List<ReelModel> reels = [];
+    List<String> reelVideos =
+        Provider.of<AppData>(context, listen: false).videoList;
+    Random random = Random();
+
+    for (int i = 0; i < reelVideos.length; i++) {
+      int likes = random.nextInt(1000000);
+      int comments = 0;
+      int randomIndex = random.nextInt(49);
+      ReelModel reel = ReelModel(
+        id: 'reel_$i',
+        userId: 'user_$i',
+        username: northIndianNames[randomIndex],
+        userImage:
+            isMale(northIndianNames[randomIndex]) ? maleAvatar : femaleAvatar,
+        videoUrl: reelVideos[i],
+        caption: 'Caption for reel $i',
+        location: 'Location $i',
+        likes: likes,
+        comments: comments,
+        shares: i * 2,
+        time: 'Time for reel $i',
+        commentsData: [],
+      );
+      reels.add(reel);
+    }
+    return reels;
   }
 }

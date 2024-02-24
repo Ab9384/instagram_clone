@@ -13,6 +13,13 @@ NumberFormat numberFormat = NumberFormat.currency(
   symbol: '',
 );
 
+// compact indian number format 1L, 1Cr
+NumberFormat compactNumberFormat = NumberFormat.compactCurrency(
+  locale: 'en_IN',
+  decimalDigits: 0,
+  symbol: '',
+);
+
 String femaleAvatar =
     'https://khabarwani.com/wp-content/uploads/2022/10/Avneet-Kaur-cute.jpg';
 

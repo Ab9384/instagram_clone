@@ -19,22 +19,20 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<PostModel> postList = [];
   @override
   void initState() {
-    if (Provider.of<AppData>(context, listen: false).postList.isEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        Provider.of<AppData>(context, listen: false).setPostList =
-            HelperFunctions().generateDummyPosts(context);
-        Provider.of<AppData>(context, listen: false).setStoriesList =
-            HelperFunctions().generateDummyStories(context);
-      });
-    }
+    postList = Provider.of<AppData>(context, listen: false).postList;
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<AppData>(context, listen: false).setStoriesList =
+          HelperFunctions().generateDummyStories(context);
+    });
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    List<PostModel> postList = Provider.of<AppData>(context).postList;
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
@@ -76,15 +74,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             CupertinoSliverRefreshControl(
               onRefresh: () async {
-                List<PostModel> postList =
-                    HelperFunctions().generateDummyPosts(context);
-                Provider.of<AppData>(context, listen: false).setPostList =
-                    postList;
-
                 List<StoryModel> storiesList =
                     HelperFunctions().generateDummyStories(context);
                 Provider.of<AppData>(context, listen: false).setStoriesList =
                     storiesList;
+                postList.shuffle();
                 await Future<void>.delayed(
                   const Duration(milliseconds: 2000),
                 );

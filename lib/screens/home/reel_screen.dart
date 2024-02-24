@@ -2,7 +2,9 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_clone/models/reel_model.dart';
 import 'package:instagram_clone/provider/app_data.dart';
+import 'package:instagram_clone/utils/global_variable.dart';
 import 'package:instagram_clone/widgets/video_player_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -14,11 +16,11 @@ class ReelScreen extends StatefulWidget {
 }
 
 class _ReelScreenState extends State<ReelScreen> {
-  List<String> reels = [];
+  List<ReelModel> reels = [];
   @override
   void initState() {
-    reels = Provider.of<AppData>(context, listen: false).reelVideoList;
-
+    reels = Provider.of<AppData>(context, listen: false).reelsList;
+    reels.shuffle();
     super.initState();
   }
 
@@ -33,7 +35,7 @@ class _ReelScreenState extends State<ReelScreen> {
           scrollDirection: Axis.vertical,
           itemBuilder: (context, index) {
             // print('reel index: $index');
-            return ReelWidget(videoUrl: reels[index]);
+            return ReelWidget(reel: reels[index]);
           },
         ),
       ),
@@ -42,10 +44,10 @@ class _ReelScreenState extends State<ReelScreen> {
 }
 
 class ReelWidget extends StatelessWidget {
-  final String videoUrl;
+  final ReelModel reel;
   const ReelWidget({
     super.key,
-    required this.videoUrl,
+    required this.reel,
   });
 
   @override
@@ -65,7 +67,7 @@ class ReelWidget extends StatelessWidget {
               //       cache: true,
               //     )),
               child: VideoPlayerWidget(
-            videoUrl: videoUrl,
+            videoUrl: reel.videoUrl,
             gestureEnabled: true,
             aspectRatio: 9 / 16,
             playSound: true,
@@ -111,11 +113,11 @@ class ReelWidget extends StatelessWidget {
                 color: Colors.white,
               ),
               const SizedBox(height: 5),
-              const Text(
-                '1.5k',
-                style: TextStyle(
+              Text(
+                compactNumberFormat.format(reel.likes),
+                style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 15,
+                  fontSize: 10,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -127,11 +129,11 @@ class ReelWidget extends StatelessWidget {
                 color: Colors.white,
               ),
               const SizedBox(height: 5),
-              const Text(
-                '1.5k',
-                style: TextStyle(
+              Text(
+                compactNumberFormat.format(reel.comments),
+                style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 15,
+                  fontSize: 10,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -143,11 +145,11 @@ class ReelWidget extends StatelessWidget {
                 color: Colors.white,
               ),
               const SizedBox(height: 5),
-              const Text(
-                '1.5k',
-                style: TextStyle(
+              Text(
+                compactNumberFormat.format(reel.shares),
+                style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 15,
+                  fontSize: 10,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -174,18 +176,18 @@ class ReelWidget extends StatelessWidget {
                   Row(
                     children: [
                       ExtendedImage.network(
-                        Provider.of<AppData>(context).postImageList[35],
+                        reel.userImage,
                         shape: BoxShape.circle,
                         height: 40,
                         width: 40,
                         fit: BoxFit.cover,
                       ),
                       const SizedBox(width: 10),
-                      const Flexible(
+                      Flexible(
                         child: Text(
-                          'Very very long user name',
+                          reel.username,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
@@ -220,17 +222,19 @@ class ReelWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   // caption wiht read more
-                  const Row(children: [
+                  Row(children: [
                     Flexible(
                         child: Text(
-                            ' Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nec odio vitae nunc. ',
+                            reel.caption.length > 100
+                                ? '${reel.caption.substring(0, 100)}...'
+                                : reel.caption,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
                             ))),
-                    SizedBox(width: 80),
+                    const SizedBox(width: 80),
                   ])
                 ],
               ),
