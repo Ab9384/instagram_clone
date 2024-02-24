@@ -16,7 +16,7 @@ Future<void> main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(
         create: (BuildContext context) => SettingsProvider()),
-    ChangeNotifierProvider(create: (BuildContext context) => AppData())
+    ChangeNotifierProvider(create: (BuildContext context) => AppData()),
   ], child: const MyApp()));
 }
 

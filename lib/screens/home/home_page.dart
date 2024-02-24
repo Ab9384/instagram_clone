@@ -3,10 +3,12 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:instagram_clone/functions/helper_functions.dart';
 import 'package:instagram_clone/models/post_model.dart';
 import 'package:instagram_clone/models/story_model.dart';
 import 'package:instagram_clone/provider/app_data.dart';
+import 'package:instagram_clone/screens/story/story_view.dart';
 import 'package:instagram_clone/widgets/post_widget.dart';
 import 'package:instagram_clone/widgets/stories_widget.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     postList = Provider.of<AppData>(context, listen: false).postList;
+    debugPrint('postList: ${postList.first.id}');
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Provider.of<AppData>(context, listen: false).setStoriesList =
           HelperFunctions().generateDummyStories(context);
@@ -48,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ? Colors.white
                         : Colors.black,
                 alignment: Alignment.center,
-                width: 100,
+                width: 110,
               ),
               actions: [
                 IconButton(
@@ -98,7 +101,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     return Row(
                       children: [
                         if (index == 0) const MyStoryWidget(),
-                        StoriesWidget(story: storyModel),
+                        GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => StoryViewScreen(),
+                                ),
+                              );
+                            },
+                            child: StoriesWidget(story: storyModel)),
                       ],
                     );
                   },

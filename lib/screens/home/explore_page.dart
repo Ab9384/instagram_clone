@@ -7,6 +7,7 @@ import 'package:instagram_clone/models/post_model.dart';
 import 'package:instagram_clone/models/reel_model.dart';
 import 'package:instagram_clone/provider/app_data.dart';
 import 'package:instagram_clone/screens/post/post_view_screen.dart';
+import 'package:instagram_clone/widgets/video_player_widget.dart';
 import 'package:provider/provider.dart';
 import 'dart:math' as math;
 
@@ -18,19 +19,14 @@ class ExplorePage extends StatefulWidget {
 }
 
 class _ExplorePageState extends State<ExplorePage> {
-  List<PostModel> postImageList = [];
+  List<PostModel> postList = [];
   List<ReelModel> reelVideoList = [];
   int totalELements = 0;
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      setState(() {
-        postImageList = Provider.of<AppData>(context, listen: false).postList;
-        reelVideoList = Provider.of<AppData>(context, listen: false).reelsList;
-        totalELements = calculateTotalElements();
-      });
-    });
-
+    postList = Provider.of<AppData>(context, listen: false).postList;
+    reelVideoList = Provider.of<AppData>(context, listen: false).reelsList;
+    totalELements = calculateTotalElements();
     super.initState();
   }
 
@@ -66,7 +62,7 @@ class _ExplorePageState extends State<ExplorePage> {
         CupertinoSliverRefreshControl(
           onRefresh: () async {
             setState(() {
-              postImageList.shuffle();
+              postList.shuffle();
               reelVideoList.shuffle();
             });
             await Future<void>.delayed(
@@ -100,16 +96,16 @@ class _ExplorePageState extends State<ExplorePage> {
                       //     : Text('Image ${index - (index ~/ 5)}')
                       ? SearchPageImageWidget(
                           aspectRatio: 1,
-                          postModel: postImageList[index - (index ~/ 5)])
+                          postModel: postList[index - (index ~/ 5)])
                       : index ~/ 5 < reelVideoList.length
-                          // ? VideoPlayerWidget(
-                          //     videoUrl: reelVideoList[index ~/ 5],
-                          //     gestureEnabled: false,
-                          //   )
-                          ? Text('Reel ${index ~/ 5}')
+                          ? VideoPlayerWidget(
+                              videoUrl: reelVideoList[index ~/ 5].videoUrl,
+                              gestureEnabled: false,
+                            )
+                          // ? Text('Reel ${index ~/ 5}')
                           : SearchPageImageWidget(
                               aspectRatio: 1 / 2,
-                              postModel: postImageList[index - (index ~/ 5)]),
+                              postModel: postList[index - (index ~/ 5)]),
                 ));
           },
           itemCount: totalELements,
@@ -129,7 +125,7 @@ class _ExplorePageState extends State<ExplorePage> {
 
   int calculateTotalElements() {
     int noOfReels = reelVideoList.length;
-    int noOfImages = postImageList.length;
+    int noOfImages = postList.length;
     int totalElements = 0;
 
     // Calculate the maximum number of reels that can be used based on the image count

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/models/post_model.dart';
 import 'package:instagram_clone/provider/app_data.dart';
