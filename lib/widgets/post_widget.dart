@@ -1,10 +1,12 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:instagram_clone/models/post_model.dart';
 
 import 'package:instagram_clone/utils/app_colors.dart';
 import 'package:instagram_clone/utils/global_variable.dart';
+import 'package:instagram_clone/widgets/zoom_overlay.dart';
 
 class PostWidget extends StatefulWidget {
   final PostModel postModel;
@@ -14,7 +16,8 @@ class PostWidget extends StatefulWidget {
   State<PostWidget> createState() => _PostWidgetState();
 }
 
-class _PostWidgetState extends State<PostWidget> {
+class _PostWidgetState extends State<PostWidget>
+    with SingleTickerProviderStateMixin {
   ScrollController dotScrollController = ScrollController();
   int currentImageIndex = 0;
 
@@ -76,25 +79,37 @@ class _PostWidgetState extends State<PostWidget> {
                       });
                     },
                     itemBuilder: (context, index) {
-                      return ExtendedImage.network(
-                        widget.postModel.images[index],
-                        fit: BoxFit.fitHeight,
-                        cache: true,
-                        loadStateChanged: (state) {
-                          if (state.extendedImageLoadState ==
-                              LoadState.loading) {
-                            return const Center(
-                              child: CupertinoActivityIndicator(),
-                            );
-                          } else if (state.extendedImageLoadState ==
-                              LoadState.failed) {
-                            return const Center(
-                              child: Text(''),
-                            );
-                          } else {
-                            return null;
-                          }
-                        },
+                      return Stack(
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            height: double.infinity,
+                            color: Colors.black12,
+                          ),
+                          ZoomOverlay(
+                            twoTouchOnly: true,
+                            child: ExtendedImage.network(
+                              widget.postModel.images[index],
+                              fit: BoxFit.fitHeight,
+                              cache: true,
+                              loadStateChanged: (state) {
+                                if (state.extendedImageLoadState ==
+                                    LoadState.loading) {
+                                  return const Center(
+                                    child: CupertinoActivityIndicator(),
+                                  );
+                                } else if (state.extendedImageLoadState ==
+                                    LoadState.failed) {
+                                  return const Center(
+                                    child: Text(''),
+                                  );
+                                } else {
+                                  return null;
+                                }
+                              },
+                            ),
+                          ),
+                        ],
                       );
                     },
                   ),

@@ -112,6 +112,8 @@ class StoryItemViewer extends StatelessWidget {
       controller: storyItemController,
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
+        Duration duration = const Duration(seconds: 5);
+
         return Stack(
           children: [
             Positioned.fill(
@@ -133,11 +135,11 @@ class StoryItemViewer extends StatelessWidget {
               child: Row(
                 children: List.generate(
                   selectedImages.length,
-                  (index) => const Expanded(
+                  (indicatorIndex) => Expanded(
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 2),
                       child: LinearProgressIndicatorWidget(
-                        value: 0.5,
+                        value: getProgress(indicatorIndex, index),
                         maxValue: 1,
                       ),
                     ),
@@ -206,6 +208,17 @@ class StoryItemViewer extends StatelessWidget {
       },
     );
   }
+
+  double getProgress(int indicatorIndex, int index) {
+    print("indicatorIndex: $indicatorIndex, index: $index");
+    if (indicatorIndex > index) {
+      return 1.0;
+    } else if (indicatorIndex < index) {
+      return 0;
+    } else {
+      return 0.5;
+    }
+  }
 }
 
 class StoryItem extends StatefulWidget {
@@ -264,10 +277,12 @@ class _StoryItemState extends State<StoryItem> {
         } else {
           _timer = Timer(const Duration(seconds: 5), () {
             if (widget.currentStoryItem == widget.maxStoryItem) {
-              widget.masterPageController.nextPage(
-                duration: const Duration(milliseconds: 400),
-                curve: Curves.easeInOut,
-              );
+              if (widget.masterPageController.hasClients) {
+                widget.masterPageController.nextPage(
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.easeInOut,
+                );
+              }
               if (widget.currentPage == widget.maxPages) {
                 Navigator.pop(context);
               }
