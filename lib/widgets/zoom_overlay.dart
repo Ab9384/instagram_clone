@@ -144,6 +144,7 @@ class _ZoomOverlayState extends State<ZoomOverlay>
 
     final translationDelta = details.focalPoint - _startFocalPoint;
 
+    // Calculate translation with a smoother adjustment
     final translate = Matrix4.translation(
       Vector3(translationDelta.dx, translationDelta.dy, 0),
     );
@@ -153,20 +154,36 @@ class _ZoomOverlayState extends State<ZoomOverlay>
       details.focalPoint - translationDelta,
     );
 
-    var scaleby = details.scale;
-    if (widget.minScale != null && scaleby < widget.minScale!) {
-      scaleby = widget.minScale ?? 0;
+    var scaleBy = details.scale;
+    if (widget.minScale != null && scaleBy < widget.minScale!) {
+      scaleBy = widget.minScale ?? 0;
     }
 
-    if (widget.maxScale != null && scaleby > widget.maxScale!) {
-      scaleby = widget.maxScale ?? 0;
+    if (widget.maxScale != null && scaleBy > widget.maxScale!) {
+      scaleBy = widget.maxScale ?? 0;
     }
 
-    final dx = (1 - scaleby) * focalPoint.dx;
-    final dy = (1 - scaleby) * focalPoint.dy;
-
-    final scale =
-        Matrix4(scaleby, 0, 0, 0, 0, scaleby, 0, 0, 0, 0, 1, 0, dx, dy, 0, 1);
+    // Calculate scaling with a smoother adjustment
+    final dx = (1 - scaleBy) * focalPoint.dx;
+    final dy = (1 - scaleBy) * focalPoint.dy;
+    final scale = Matrix4(
+      scaleBy,
+      0,
+      0,
+      0,
+      0,
+      scaleBy,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      dx,
+      dy,
+      0,
+      1,
+    );
 
     _matrix = translate * scale;
 

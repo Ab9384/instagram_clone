@@ -87,26 +87,28 @@ class _PostWidgetState extends State<PostWidget>
                             color: Colors.black12,
                           ),
                           ZoomOverlay(
-                            twoTouchOnly: true,
-                            child: ExtendedImage.network(
-                              widget.postModel.images[index],
-                              fit: BoxFit.fitHeight,
-                              cache: true,
-                              loadStateChanged: (state) {
-                                if (state.extendedImageLoadState ==
-                                    LoadState.loading) {
-                                  return const Center(
-                                    child: CupertinoActivityIndicator(),
-                                  );
-                                } else if (state.extendedImageLoadState ==
-                                    LoadState.failed) {
-                                  return const Center(
-                                    child: Text(''),
-                                  );
-                                } else {
-                                  return null;
-                                }
-                              },
+                            child: AspectRatio(
+                              aspectRatio: 4 / 5,
+                              child: ExtendedImage.network(
+                                widget.postModel.images[index],
+                                fit: BoxFit.fitHeight,
+                                cache: true,
+                                loadStateChanged: (state) {
+                                  if (state.extendedImageLoadState ==
+                                      LoadState.loading) {
+                                    return const Center(
+                                      child: CupertinoActivityIndicator(),
+                                    );
+                                  } else if (state.extendedImageLoadState ==
+                                      LoadState.failed) {
+                                    return const Center(
+                                      child: Text(''),
+                                    );
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                              ),
                             ),
                           ),
                         ],
