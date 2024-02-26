@@ -67,7 +67,7 @@ class ReelWidget extends StatelessWidget {
               //       cache: true,
               //     )),
               child: VideoPlayerWidget(
-            videoUrl: reel.videoUrl,
+            reelModel: reel,
             gestureEnabled: true,
             aspectRatio: 9 / 16,
             playSound: true,

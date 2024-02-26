@@ -99,7 +99,7 @@ class _ExplorePageState extends State<ExplorePage> {
                           postModel: postList[index - (index ~/ 5)])
                       : index ~/ 5 < reelVideoList.length
                           ? VideoPlayerWidget(
-                              videoUrl: reelVideoList[index ~/ 5].videoUrl,
+                              reelModel: reelVideoList[index ~/ 5],
                               gestureEnabled: false,
                             )
                           // ? Text('Reel ${index ~/ 5}')

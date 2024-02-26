@@ -1,20 +1,25 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_clone/functions/navigator_function.dart';
 import 'package:instagram_clone/functions/toast_function.dart';
+import 'package:instagram_clone/models/reel_model.dart';
+import 'package:instagram_clone/screens/reels/reel_viewer.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPlayerWidget extends StatefulWidget {
-  final String videoUrl;
+  final ReelModel? reelModel;
+  final String? videoUrl;
   final bool gestureEnabled;
   final bool? playSound;
   final double? aspectRatio;
   const VideoPlayerWidget(
       {super.key,
-      required this.videoUrl,
+      this.reelModel,
       required this.gestureEnabled,
       this.playSound,
-      this.aspectRatio});
+      this.aspectRatio,
+      this.videoUrl});
 
   @override
   State<VideoPlayerWidget> createState() => _VideoPlayerWidgetState();
@@ -22,12 +27,19 @@ class VideoPlayerWidget extends StatefulWidget {
 
 class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   VideoPlayerController? videoPlayerController;
+  String? videoUrl;
 
   @override
   void initState() {
+    if (widget.reelModel != null) {
+      videoUrl = widget.reelModel!.videoUrl;
+    } else {
+      videoUrl = widget.videoUrl;
+    }
+
     videoPlayerController = VideoPlayerController.networkUrl(
         Uri.parse(
-          widget.videoUrl,
+          videoUrl!,
         ),
         formatHint: VideoFormat.other,
         videoPlayerOptions: VideoPlayerOptions(mixWithOthers: false))
@@ -48,7 +60,8 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
           videoPlayerController!.setLooping(true);
         });
       }).onError((error, stackTrace) {
-        debugPrint('Error in video player for url: ${widget.videoUrl}');
+        debugPrint(
+            'Error in video player for url: ${videoUrl ?? 'null'} and error: $error');
       });
 
     super.initState();
@@ -95,6 +108,11 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                             } else {
                               videoPlayerController!.setVolume(1);
                               showTransparentDialog(context, false);
+                            }
+                          } else {
+                            if (widget.reelModel != null) {
+                              NavigatorFunctions.navigateTo(context,
+                                  ReelViewScreen(reelModel: widget.reelModel!));
                             }
                           }
                         },
