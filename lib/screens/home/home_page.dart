@@ -3,12 +3,11 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:instagram_clone/functions/helper_functions.dart';
 import 'package:instagram_clone/models/post_model.dart';
 import 'package:instagram_clone/models/story_model.dart';
 import 'package:instagram_clone/provider/app_data.dart';
-import 'package:instagram_clone/screens/story/story_view.dart';
+import 'package:instagram_clone/screens/story/story_viewer.dart';
 import 'package:instagram_clone/widgets/post_widget.dart';
 import 'package:instagram_clone/widgets/stories_widget.dart';
 import 'package:provider/provider.dart';
@@ -103,10 +102,21 @@ class _HomeScreenState extends State<HomeScreen> {
                         if (index == 0) const MyStoryWidget(),
                         GestureDetector(
                             onTap: () {
+                              List<String> storiesList =
+                                  Provider.of<AppData>(context, listen: false)
+                                      .imageList;
+                              List<String> images = [
+                                storiesList[41],
+                                storiesList[29],
+                                storiesList[45]
+                              ];
+
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => StoryViewScreen(),
+                                  builder: (context) => StoryViewer(
+                                    images: images,
+                                  ),
                                 ),
                               );
                             },

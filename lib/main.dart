@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:instagram_clone/firebase_options.dart';
 import 'package:instagram_clone/provider/app_data.dart';
 import 'package:instagram_clone/provider/settings.dart';
+import 'package:instagram_clone/provider/story_data.dart';
 import 'package:instagram_clone/screens/deciding_screen.dart';
 import 'package:instagram_clone/utils/app_colors.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +18,7 @@ Future<void> main() async {
     ChangeNotifierProvider(
         create: (BuildContext context) => SettingsProvider()),
     ChangeNotifierProvider(create: (BuildContext context) => AppData()),
+    ChangeNotifierProvider(create: (BuildContext context) => StoryData()),
   ], child: const MyApp()));
 }
 
@@ -26,16 +28,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onLongPress: () {
-        Provider.of<SettingsProvider>(context, listen: false).toggleTheme();
-      },
-      child: MaterialApp(
-        title: 'Instagram Clone',
-        debugShowCheckedModeBanner: false,
-        theme: getTheme(context),
-        home: const DecidingScreen(),
-      ),
+    return MaterialApp(
+      title: 'Instagram Clone',
+      debugShowCheckedModeBanner: false,
+      theme: getTheme(context),
+      home: const DecidingScreen(),
     );
   }
 
