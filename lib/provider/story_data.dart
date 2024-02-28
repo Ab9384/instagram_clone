@@ -3,11 +3,18 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class StoryData extends ChangeNotifier {
-  List<double> progress = [];
+  Map<int, List<double>> progress = {};
   Timer? timer;
+  int storyPage = 0;
 
-  initProgress(int imageCount) {
-    progress = List.generate(imageCount, (index) => 0.0);
+  initProgress(Map<int, List<double>> p) {
+    progress = p;
+    debugPrint('currentPage: $p');
+  }
+
+  // update story page
+  updateStoryPage(int page) {
+    storyPage = page;
   }
 
   void updateProgress(
@@ -24,8 +31,8 @@ class StoryData extends ChangeNotifier {
     final stepIncrement = 1.0 / steps;
     double currentProgress = 0.0;
     timer = Timer.periodic(updateInterval, (t) {
-      print('updateProgress Timer $currentProgress');
-      progress[index] += stepIncrement;
+      debugPrint('updateProgress Timer $currentProgress');
+      progress[storyPage]![index] += stepIncrement;
 
       currentProgress += stepIncrement;
       if (currentProgress >= 1) {
@@ -39,7 +46,7 @@ class StoryData extends ChangeNotifier {
     });
   }
 
-  canceTimer() {
+  cancelTimer() {
     if (timer != null) timer?.cancel();
   }
 
@@ -52,15 +59,17 @@ class StoryData extends ChangeNotifier {
   resumeTimer(index) {
     // start timer from where it was paused by reading the progress[index]
     const updateInterval = Duration(milliseconds: 50);
-    final steps = (progress[index] * 1000) / updateInterval.inMilliseconds;
+    final steps =
+        (progress[storyPage]![index] * 1000) / updateInterval.inMilliseconds;
     final stepIncrement = 1.0 / steps;
-    double currentProgress = progress[index];
+    double currentProgress = progress[storyPage]![index];
     timer = Timer.periodic(updateInterval, (t) {
-      print('resumeTimer Timer $currentProgress');
-      progress[index] += stepIncrement;
+      debugPrint('resumeTimer Timer $currentProgress');
+      progress[storyPage]![index] += stepIncrement;
 
       currentProgress += stepIncrement;
       if (currentProgress >= 1) {
+        progress[storyPage]![index] = 1;
         t.cancel(); // Cancel the timer when progress reaches 1
       }
       notifyListeners(); // Notify listeners every time progress is updated
@@ -69,7 +78,7 @@ class StoryData extends ChangeNotifier {
 
   // updateProgress manually
   updateProgressManually(int index, double progressValue) {
-    progress[index] = progressValue;
+    progress[storyPage]![index] = progressValue;
     notifyListeners();
   }
 }

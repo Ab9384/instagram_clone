@@ -2,20 +2,20 @@ class StoryModel {
   String userId;
   String username;
   String userImage;
-  List<StoryFileModel> stories;
+  List<StoryFileModel> storyItems;
 
   StoryModel({
     required this.userId,
     required this.username,
     required this.userImage,
-    required this.stories,
+    required this.storyItems,
   });
 
   StoryModel.fromMap(Map<String, dynamic> data)
       : userId = data['userId'],
         username = data['username'],
         userImage = data['userImage'],
-        stories = List<StoryFileModel>.from(
+        storyItems = List<StoryFileModel>.from(
           data['stories'].map(
             (story) => StoryFileModel.fromMap(story),
           ),

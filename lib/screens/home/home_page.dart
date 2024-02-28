@@ -7,7 +7,8 @@ import 'package:instagram_clone/functions/helper_functions.dart';
 import 'package:instagram_clone/models/post_model.dart';
 import 'package:instagram_clone/models/story_model.dart';
 import 'package:instagram_clone/provider/app_data.dart';
-import 'package:instagram_clone/screens/story/story_viewer.dart';
+import 'package:instagram_clone/provider/story_data.dart';
+import 'package:instagram_clone/screens/story/story_view.dart';
 import 'package:instagram_clone/widgets/post_widget.dart';
 import 'package:instagram_clone/widgets/stories_widget.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +29,23 @@ class _HomeScreenState extends State<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Provider.of<AppData>(context, listen: false).setStoriesList =
           HelperFunctions().generateDummyStories(context);
+      Map<int, List<double>> progress = {};
+      for (int i = 0;
+          i < Provider.of<AppData>(context, listen: false).storiesList.length;
+          i++) {
+        progress[i] = List<double>.filled(
+            Provider.of<AppData>(context, listen: false)
+                .storiesList[i]
+                .storyItems
+                .length,
+            0.0);
+      }
+      debugPrint('currentPage: $progress');
+      Provider.of<StoryData>(context, listen: false).initProgress(progress);
+      progress.addAll(progress);
     });
+
+    // Provider.of<StoryData>(context, listen: false).initProgress(progress);
 
     super.initState();
   }
@@ -102,20 +119,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         if (index == 0) const MyStoryWidget(),
                         GestureDetector(
                             onTap: () {
-                              List<String> storiesList =
-                                  Provider.of<AppData>(context, listen: false)
-                                      .imageList;
-                              List<String> images = [
-                                storiesList[41],
-                                storiesList[29],
-                                storiesList[45]
-                              ];
-
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => StoryViewer(
-                                    images: images,
+                                  builder: (context) => StoryViewScreen(
+                                    index: index,
                                   ),
                                 ),
                               );
