@@ -28,11 +28,23 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Instagram Clone',
-      debugShowCheckedModeBanner: false,
-      theme: getTheme(context),
-      home: const DecidingScreen(),
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus &&
+            currentFocus.focusedChild != null) {
+          currentFocus.focusedChild!.unfocus();
+        }
+      },
+      onLongPress: () {
+        Provider.of<SettingsProvider>(context, listen: false).toggleTheme();
+      },
+      child: MaterialApp(
+        title: 'Instagram Clone',
+        debugShowCheckedModeBanner: false,
+        theme: getTheme(context),
+        home: const DecidingScreen(),
+      ),
     );
   }
 

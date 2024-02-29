@@ -85,4 +85,94 @@ class AppColors {
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
   );
+  static LinearGradient sunriseSorbetGradient = const LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    stops: [0.0, 0.55, 1.0],
+    colors: [
+      Color(0xFFFF9A8B),
+      Color(0xFFFF6A88),
+      Color(0xFFFF99AC),
+    ],
+    transform:
+        GradientRotation(90 * 3.1415927 / 180), // Convert degrees to radians
+  );
+
+  static LinearGradient lemonLimeSherbetGradient = const LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    stops: [0.0, 1.0],
+    colors: [
+      Color(0xFF85FFBD),
+      Color(0xFFFFFB7D),
+    ],
+    transform:
+        GradientRotation(45 * 3.1415927 / 180), // Convert degrees to radians
+  );
+  static LinearGradient peachySunsetGradient = const LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    stops: [0.0, 1.0],
+    colors: [
+      Color(0xFFFBAB7E),
+      Color(0xFFF7CE68),
+    ],
+    transform:
+        GradientRotation(62 * 3.1415927 / 180), // Convert degrees to radians
+  );
+  static LinearGradient azureAquaGradient = const LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    stops: [0.0, 1.0],
+    colors: [
+      Color(0xFF0093E9),
+      Color(0xFF80D0C7),
+    ],
+    transform:
+        GradientRotation(160 * 3.1415927 / 180), // Convert degrees to radians
+  );
+  static LinearGradient auroraBorealisGradient = const LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    stops: [0.0, 0.46, 1.0],
+    colors: [
+      Color(0xFF4158D0),
+      Color(0xFFC850C0),
+      Color(0xFFFFCC70),
+    ],
+  );
+  static Gradient goldenMeadowGradient = const LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    stops: [0.0, 1.0],
+    colors: [
+      Color(0xFFF4D03F),
+      Color(0xFF16A085),
+    ],
+    transform:
+        GradientRotation(132 * 3.1415927 / 180), // Convert degrees to radians
+  );
+  static Gradient vividVioletGradient = const LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    stops: [0.0, 0.5, 1.0],
+    colors: [
+      Color(0xFFFF3CAC),
+      Color(0xFF784BA0),
+      Color(0xFF2B86C5),
+    ],
+    transform:
+        GradientRotation(225 * 3.1415927 / 180), // Convert degrees to radians
+  );
+
+  static List<Gradient> gradients = [
+    instaGradient,
+    sunriseSorbetGradient,
+    // lemonLimeSherbetGradient,
+    peachySunsetGradient,
+    azureAquaGradient,
+    auroraBorealisGradient,
+    goldenMeadowGradient,
+    vividVioletGradient,
+  ];
 }

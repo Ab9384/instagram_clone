@@ -9,6 +9,7 @@ class UserModel {
   String? email;
   List<String>? following;
   List<String>? followers;
+  List<String>? posts;
   String? profilePhoto;
   String? bio;
   String? website;
@@ -24,6 +25,7 @@ class UserModel {
       this.gender,
       this.following,
       this.followers,
+      this.posts,
       this.profilePhoto,
       this.bio,
       this.website,
@@ -37,8 +39,9 @@ class UserModel {
     dateOfBirth = json['dateOfBirth'];
     gender = json['gender'];
     email = json['email'];
-    following = json['following'];
-    followers = json['followers'];
+    following = json['following'] ?? [];
+    followers = json['followers'] ?? [];
+    posts = json['posts'] ?? [];
     profilePhoto = json['profilePhoto'] ??
         (json['gender'].toString().toLowerCase() == 'female'
             ? femaleAvatar
@@ -58,6 +61,7 @@ class UserModel {
     data['email'] = email;
     data['following'] = following;
     data['followers'] = followers;
+    data['posts'] = posts;
     data['profilePhoto'] = profilePhoto;
     data['bio'] = bio;
     data['website'] = website;

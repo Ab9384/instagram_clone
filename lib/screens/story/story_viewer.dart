@@ -35,13 +35,13 @@ class _StoryViewerState extends State<StoryViewer> {
         .storiesList
         .indexOf(widget.story);
 
-    print("currentStoryIndex: $currentStoryIndex");
+    debugPrint("currentStoryIndex: $currentStoryIndex");
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       List<double> p = Provider.of<StoryData>(context, listen: false)
           .progress[currentStoryIndex]!;
       int currrentPage = p.indexOf(p.firstWhere((element) => (element != 1.0)));
-      print('currentPage index: $currrentPage');
+      debugPrint('currentPage index: $currrentPage');
       Provider.of<StoryData>(context, listen: false)
           .updateProgressManually(currrentPage, 0.0);
       // Use jumpToPage outside of setState
@@ -229,7 +229,7 @@ class _StoryViewerState extends State<StoryViewer> {
 
                 if (provider.progress[provider.storyPage]![index] == 0.0) {
                   videoPlayerController!.play();
-                  WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+                  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                     provider.updateProgress(
                         index,
                         widget.story.storyItems.length,
