@@ -42,6 +42,8 @@ class _StoryViewerState extends State<StoryViewer> {
           .progress[currentStoryIndex]!;
       int currrentPage = p.indexOf(p.firstWhere((element) => (element != 1.0)));
       debugPrint('currentPage index: $currrentPage');
+      debugPrint(
+          'currentPage: ${Provider.of<StoryData>(context, listen: false).progress}');
       Provider.of<StoryData>(context, listen: false)
           .updateProgressManually(currrentPage, 0.0);
       // Use jumpToPage outside of setState
@@ -88,6 +90,7 @@ class _StoryViewerState extends State<StoryViewer> {
                 right: 5,
                 child: Consumer<StoryData>(
                   builder: (context, value, child) {
+                    
                     return Row(
                       children: List.generate(
                         widget.story.storyItems.length,
@@ -309,8 +312,8 @@ class _StoryViewerState extends State<StoryViewer> {
   }
 
   Future<VideoPlayerController> _initializeVideoPlayer(String videoUrl) async {
-    videoPlayerController = VideoPlayerController.network(
-        videoUrl); // Change to network instead of networkUrl
+    videoPlayerController = VideoPlayerController.networkUrl(
+        Uri.parse(videoUrl)); // Change to network instead of networkUrl
     await videoPlayerController!.initialize();
     return videoPlayerController!;
   }

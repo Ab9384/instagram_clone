@@ -46,7 +46,11 @@ class _StoryViewScreenState extends State<StoryViewScreen> {
       body: SafeArea(
         child: PageView.builder(
           controller: _pageController,
-          physics: const NeverScrollableScrollPhysics(),
+          onPageChanged: (index) {
+            Provider.of<StoryData>(context, listen: false)
+                .updateStoryPage(index);
+            Provider.of<StoryData>(context, listen: false).cancelTimer();
+          },
           itemCount:
               Provider.of<AppData>(context, listen: false).storiesList.length,
           itemBuilder: (context, index) {
@@ -65,9 +69,6 @@ class _StoryViewScreenState extends State<StoryViewScreen> {
               Provider.of<StoryData>(context, listen: false)
                   .cancelTimer(); // cancel the timer
             }
-
-            Provider.of<StoryData>(context, listen: false)
-                .updateStoryPage(currentPage);
             debugPrint("currentPage: $currentPage");
 
             transform.setEntry(3, 2, 0.003);

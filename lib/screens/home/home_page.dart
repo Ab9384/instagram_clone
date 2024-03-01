@@ -119,6 +119,17 @@ class _HomeScreenState extends State<HomeScreen> {
                         if (index == 0) const MyStoryWidget(),
                         GestureDetector(
                             onTap: () {
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) => StoryViewer(
+                              //       story: Provider.of<AppData>(context,
+                              //               listen: false)
+                              //           .storiesList[index],
+                              //       storyPageController: PageController(),
+                              //     ),
+                              //   ),
+                              // );
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(

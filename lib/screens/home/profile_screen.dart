@@ -1,13 +1,11 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:instagram_clone/functions/navigator_function.dart';
 import 'package:instagram_clone/models/user_model.dart';
 import 'package:instagram_clone/provider/app_data.dart';
 import 'package:instagram_clone/screens/profile/share_profile.dart';
 import 'package:instagram_clone/utils/app_colors.dart';
-import 'package:instagram_clone/utils/global_variable.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
