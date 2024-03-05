@@ -26,6 +26,7 @@ class StoryFileModel {
   String id;
   String type;
   String url;
+  bool isViewed = false;
 
   StoryFileModel({
     required this.id,

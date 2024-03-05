@@ -10,7 +10,6 @@ import 'package:custom_qr_generator/shapes/frame_shape.dart';
 import 'package:custom_qr_generator/shapes/pixel_shape.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:instagram_clone/models/user_model.dart';
 import 'package:instagram_clone/provider/app_data.dart';
 import 'package:instagram_clone/utils/app_colors.dart';

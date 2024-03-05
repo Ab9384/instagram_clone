@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:extended_image/extended_image.dart';
@@ -7,10 +8,12 @@ import 'package:instagram_clone/models/story_model.dart';
 import 'package:instagram_clone/provider/app_data.dart';
 
 class StoryViewer extends StatefulWidget {
+  final int currentStoryPage;
   final StoryModel story;
   final PageController storyPageController;
   const StoryViewer({
     Key? key,
+    required this.currentStoryPage,
     required this.story,
     required this.storyPageController,
   }) : super(key: key);
@@ -31,23 +34,28 @@ class _StoryViewerState extends State<StoryViewer> {
     pageController = PageController();
     durationInSeconds =
         List<double>.generate(widget.story.storyItems.length, (index) => 0.0);
-    int currentStoryIndex = Provider.of<AppData>(context, listen: false)
-        .storiesList
-        .indexOf(widget.story);
-
-    debugPrint("currentStoryIndex: $currentStoryIndex");
-
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      List<double> p = Provider.of<StoryData>(context, listen: false)
-          .progress[currentStoryIndex]!;
-      int currrentPage = p.indexOf(p.firstWhere((element) => (element != 1.0)));
-      debugPrint('currentPage index: $currrentPage');
-      debugPrint(
-          'currentPage: ${Provider.of<StoryData>(context, listen: false).progress}');
-      Provider.of<StoryData>(context, listen: false)
-          .updateProgressManually(currrentPage, 0.0);
-      // Use jumpToPage outside of setState
-      pageController.jumpToPage(currrentPage);
+      List<double> storyProgress =
+          Provider.of<StoryData>(context, listen: false)
+              .progress[widget.currentStoryPage]!;
+      int currentStory = storyProgress.indexWhere((element) => element < 1.0);
+      print("currentStorIndex: $currentStory");
+      if (currentStory != -1) {
+        Provider.of<StoryData>(context, listen: false)
+            .updateProgressManually(currentStory, widget.currentStoryPage, 0.0);
+        pageController.jumpToPage(currentStory);
+        for (int i = 0; i < storyProgress.length; i++) {
+          if (i > currentStory) {
+            Provider.of<StoryData>(context, listen: false)
+                .updateProgressManually(i, widget.currentStoryPage, 0.0);
+          }
+        }
+      } else {
+        for (int i = 0; i < storyProgress.length; i++) {
+          Provider.of<StoryData>(context, listen: false)
+              .updateProgressManually(i, widget.currentStoryPage, 0.0);
+        }
+      }
     });
   }
 
@@ -55,7 +63,7 @@ class _StoryViewerState extends State<StoryViewer> {
   void dispose() {
     pageController.dispose();
     videoPlayerController?.dispose(); // Dispose video player controller
-
+    // Provider.of<StoryData>(context, listen: false).cancelTimer();
     super.dispose();
   }
 
@@ -79,7 +87,7 @@ class _StoryViewerState extends State<StoryViewer> {
                   itemCount: widget.story.storyItems.length,
                   itemBuilder: (context, index) {
                     return widget.story.storyItems[index].type == 'image'
-                        ? _buildImage(index)
+                        ? _buildImage(index, widget.currentStoryPage)
                         : _buildVideo(index);
                   },
                 ),
@@ -90,7 +98,7 @@ class _StoryViewerState extends State<StoryViewer> {
                 right: 5,
                 child: Consumer<StoryData>(
                   builder: (context, value, child) {
-                    
+                    debugPrint("progresss: ${value.progress}");
                     return Row(
                       children: List.generate(
                         widget.story.storyItems.length,
@@ -98,7 +106,8 @@ class _StoryViewerState extends State<StoryViewer> {
                           child: Padding(
                             padding: const EdgeInsets.all(3.0),
                             child: LinearProgressIndicator(
-                              value: value.progress[value.storyPage]![index],
+                              value: value
+                                  .progress[widget.currentStoryPage]![index],
                               borderRadius: BorderRadius.circular(10),
                               backgroundColor: Colors.grey,
                               valueColor:
@@ -118,7 +127,7 @@ class _StoryViewerState extends State<StoryViewer> {
     );
   }
 
-  Widget _buildImage(int index) {
+  Widget _buildImage(int index, int storyPage) {
     durationInSeconds.insert(index, 5.0);
     return Stack(
       children: [
@@ -126,15 +135,15 @@ class _StoryViewerState extends State<StoryViewer> {
           child: ExtendedImage.network(
             widget.story.storyItems[index].url,
             fit: BoxFit.cover,
-            cache: true,
-            enableMemoryCache: true,
-            clearMemoryCacheIfFailed: true,
+            cache: false,
+            enableMemoryCache: false,
+            clearMemoryCacheIfFailed: false,
             loadStateChanged: (ExtendedImageState state) {
               debugPrint("Widget built: $index");
               switch (state.extendedImageLoadState) {
                 case LoadState.loading:
                   return const Center(
-                    child: CircularProgressIndicator(),
+                    child: CupertinoActivityIndicator(),
                   );
                 case LoadState.failed:
                   return GestureDetector(
@@ -147,14 +156,12 @@ class _StoryViewerState extends State<StoryViewer> {
                   );
                 case LoadState.completed:
                   var provider = Provider.of<StoryData>(context, listen: false);
-                  debugPrint("current progress: ${provider.progress}");
-                  if (provider.progress[provider.storyPage]![index] == 0.0) {
+                  debugPrint("current image progress: ${provider.progress}");
+                  if (provider.progress[provider.storyPage]![index] < 1.0) {
                     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                       if (mounted) {
                         provider.updateProgress(
-                            index,
-                            widget.story.storyItems.length,
-                            durationInSeconds[index], () {
+                            index, storyPage, durationInSeconds[index], () {
                           moveToNextPage(index);
                         }, mounted, context);
                       }
@@ -175,6 +182,15 @@ class _StoryViewerState extends State<StoryViewer> {
             onTap: () {
               moveToPreviousPage(index);
             },
+            onLongPressStart: (details) {
+              Provider.of<StoryData>(context, listen: false).pauseTimer();
+            },
+            onLongPressEnd: (details) {
+              Provider.of<StoryData>(context, listen: false).resumeTimer(
+                  index, widget.currentStoryPage, durationInSeconds[index], () {
+                moveToNextPage(index);
+              }, context);
+            },
             child: Container(
               width: MediaQuery.of(context).size.width / 2,
               height: MediaQuery.of(context).size.height,
@@ -190,15 +206,13 @@ class _StoryViewerState extends State<StoryViewer> {
               moveToNextPage(index);
             },
             onLongPressStart: (details) {
-              Provider.of<StoryData>(context, listen: false).cancelTimer();
+              Provider.of<StoryData>(context, listen: false).pauseTimer();
             },
             onLongPressEnd: (details) {
-              Provider.of<StoryData>(context, listen: false).updateProgress(
-                  index,
-                  widget.story.storyItems.length,
-                  durationInSeconds[index], () {
+              Provider.of<StoryData>(context, listen: false).resumeTimer(
+                  index, widget.currentStoryPage, durationInSeconds[index], () {
                 moveToNextPage(index);
-              }, mounted, context);
+              }, context);
             },
             child: Container(
               width: MediaQuery.of(context).size.width / 2,
@@ -220,7 +234,7 @@ class _StoryViewerState extends State<StoryViewer> {
             future: _initializeVideoPlayer(videoUrl),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
+                return const Center(child: CupertinoActivityIndicator());
               } else if (snapshot.hasError) {
                 return const Center(child: Text('Error loading video'));
               } else {
@@ -233,15 +247,13 @@ class _StoryViewerState extends State<StoryViewer> {
                 if (provider.progress[provider.storyPage]![index] == 0.0) {
                   videoPlayerController!.play();
                   WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                    provider.updateProgress(
-                        index,
-                        widget.story.storyItems.length,
+                    provider.updateProgress(index, widget.currentStoryPage,
                         durationInSeconds[index], () {
                       moveToNextPage(index);
                     }, mounted, context);
                   });
                 }
-                if (provider.progress[provider.storyPage]![index] == 1.0) {
+                if (provider.progress[provider.storyPage]![index] >= 1.0) {
                   videoPlayerController!.pause();
                   videoPlayerController!.dispose();
                 }
@@ -260,16 +272,14 @@ class _StoryViewerState extends State<StoryViewer> {
               videoPlayerController?.pause();
             },
             onLongPressStart: (details) {
-              Provider.of<StoryData>(context, listen: false).cancelTimer();
+              Provider.of<StoryData>(context, listen: false).pauseTimer();
               videoPlayerController?.pause();
             },
             onLongPressEnd: (details) {
-              Provider.of<StoryData>(context, listen: false).updateProgress(
-                  index,
-                  widget.story.storyItems.length,
-                  durationInSeconds[index], () {
+              Provider.of<StoryData>(context, listen: false).resumeTimer(index,
+                  widget.story.storyItems.length, durationInSeconds[index], () {
                 moveToNextPage(index);
-              }, mounted, context);
+              }, context);
               videoPlayerController?.play();
             },
             child: Container(
@@ -288,16 +298,14 @@ class _StoryViewerState extends State<StoryViewer> {
               videoPlayerController?.pause();
             },
             onLongPressStart: (details) {
-              Provider.of<StoryData>(context, listen: false).cancelTimer();
+              Provider.of<StoryData>(context, listen: false).pauseTimer();
               videoPlayerController?.pause();
             },
             onLongPressEnd: (details) {
-              Provider.of<StoryData>(context, listen: false).updateProgress(
-                  index,
-                  widget.story.storyItems.length,
-                  durationInSeconds[index], () {
+              Provider.of<StoryData>(context, listen: false).resumeTimer(index,
+                  widget.story.storyItems.length, durationInSeconds[index], () {
                 moveToNextPage(index);
-              }, mounted, context);
+              }, context);
               videoPlayerController?.play();
             },
             child: Container(
@@ -318,17 +326,23 @@ class _StoryViewerState extends State<StoryViewer> {
     return videoPlayerController!;
   }
 
+  disposeVideoPlayer() {
+    if (videoPlayerController != null) {
+      videoPlayerController!.dispose();
+    }
+  }
+
   moveToNextPage(int index) {
     if (mounted) {
-      Provider.of<StoryData>(context, listen: false)
-          .cancelTimer(); // cancel the timer
+      // Provider.of<StoryData>(context, listen: false)
+      //     .cancelTimer(); // cancel the timer
       if (index < widget.story.storyItems.length - 1) {
         pageController.nextPage(
           duration: const Duration(milliseconds: 500),
           curve: Curves.easeIn,
         );
         Provider.of<StoryData>(context, listen: false)
-            .updateProgressManually(index, 1.0);
+            .updateProgressManually(index, widget.currentStoryPage, 1.0);
       } else {
         if (widget.storyPageController.page !=
             Provider.of<AppData>(context, listen: false).storiesList.length -
@@ -345,8 +359,8 @@ class _StoryViewerState extends State<StoryViewer> {
   }
 
   moveToPreviousPage(int index) {
-    Provider.of<StoryData>(context, listen: false)
-        .cancelTimer(); // cancel the timer
+    // Provider.of<StoryData>(context, listen: false)
+    //     .cancelTimer(); // cancel the timer
     if (mounted) {
       if (index > 0) {
         pageController.previousPage(
@@ -354,9 +368,9 @@ class _StoryViewerState extends State<StoryViewer> {
           curve: Curves.easeIn,
         );
         Provider.of<StoryData>(context, listen: false)
-            .updateProgressManually(index - 1, 0.0);
+            .updateProgressManually(index - 1, widget.currentStoryPage, 0.0);
         Provider.of<StoryData>(context, listen: false)
-            .updateProgressManually(index, 0.0);
+            .updateProgressManually(index, widget.currentStoryPage, 0.0);
       } else {
         if (widget.storyPageController.page != 0) {
           widget.storyPageController.previousPage(

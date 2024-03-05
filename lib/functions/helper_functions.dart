@@ -75,8 +75,8 @@ class HelperFunctions {
         } else {
           StoryFileModel storyFile = StoryFileModel(
             id: 'reel_$j',
-            type: 'image',
-            url: postImages[random.nextInt(reelVideos.length)],
+            type: 'video',
+            url: reelVideos[random.nextInt(reelVideos.length)],
           );
           storyFiles.add(storyFile);
         }
